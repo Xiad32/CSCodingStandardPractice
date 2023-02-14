@@ -24,6 +24,7 @@ namespace CodingStandardPractice
         private static int NO_PREFIX = 5;
         private Address address;
 
+
         public employee(string first_name, string last_name, int Internal_Id = -1){
             this.first_name = first_name;
             this.last_name = last_name;
@@ -32,6 +33,7 @@ namespace CodingStandardPractice
             else
                 this.InternalId = Internal_Id;
         } 
+
         
         public employee employee_from_json(string jsonEmployeeRecord)
         {
@@ -42,20 +44,24 @@ namespace CodingStandardPractice
             return new employee(first_name, last_name, InternalId);
         }
 
+
         public void Print_Employee()
         {
             Console.WriteLine("Name: " + this.first_name + this.last_name); /* This prints only the full name */
         }
+
 
         public int Print_Employee_Id()
         {
             return this.InternalId;
         }
 
+
         public string makeString()
         {
             return "Name: " + this.first_name + " " + this.last_name + " " + " ID: " + this.InternalId;
         }
+
 
         public void saveToFile(string fileName)
         {

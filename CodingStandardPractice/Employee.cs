@@ -1,63 +1,84 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Text;
 
-
-namespace CodingStandardPractice
+public interface IAddress
 {
-    public interface Address
+    public string StreetName { get; set; }
+    public int StreetNumber { get; set; }
+    //method to print the address 
+    public void PrintAddress();
+}
+
+public class Employee
+{
+    private string _firstName;
+    private string _lastName;
+    // _internalId is used internally with every record and is assigned by an  
+    // external library 
+    private int _internalId;
+    // Temporay assigned _internald for record that has not been saved to the  
+    // database yet. 
+    private static int NOPREFIX = -1;
+    private IAddress address;
+
+    public Employee(string firstName, string lastName, int internalId = -1)
     {
-        string streetName { get; set; }
-        int streetNumber { get; set; }
-        void Print_Address();
+        _firstName = _firstName;
+        _lastName = _lastName;
+        if (internalId == -1)
+            this._internalId = IDGenerator.newId();
+        else
+            this._internalId = _internalId;
+
     }
 
-    public class employee
+    // This method prints only the full name 
+    public void PrintEmployee()
     {
-        private string first_name; private string last_name;
-        private int InternalId;
-        private static int NO_PREFIX = 5;
-        private Address address;
+        Console.WriteLine("Name: {0} {1}", this._firstName, this._lastName);
+    }
 
-        public employee(string first_name, string last_name, int Internal_Id = -1){
-            this.first_name = first_name;
-            this.last_name = last_name;
-            if (Internal_Id == -1)
-                this.InternalId = IDGenerator.newId();
-            else
-                this.InternalId = Internal_Id;
-        } 
-        
-        public employee employee_from_json(string jsonEmployeeRecord)
+
+    public int PrintEmployeeId()
+    {
+        return this._internalId;
+    }
+
+    public override string ToString()
+    {
+        return $"Name: {this._firstName} {this._lastName} ID: {this._internalId}";
+    }
+
+
+    // Saves the Employee object as the string representation of the  
+    // the class in a file provided by the argument fileName 
+    public void SaveToFile(string fileName)
+    {
+        using (FileStream fs = File.Open(fileName, FileMode.Open, FileAccess.Write, FileShare.None))
+        {
+            fs.Write(ASCIIEncoding.ASCII.GetBytes(this.ToString()));
+        }
+    }
+
+
+    // static method to instantiate an Employee object from a JSON string 
+    // Throws an exception if the string is malformated 
+    public static Employee EmployeeFromJson(string jsonEmployeeRecord)
+
+    {
+        try
         {
             JObject messageJson = JObject.Parse(jsonEmployeeRecord);
-            first_name = (string)messageJson.GetValue("first_name");
-            last_name = (string)messageJson.GetValue("last_name");
-            InternalId = (int)messageJson.GetValue("InternalId");
-            return new employee(first_name, last_name, InternalId);
+            string firstName = (string)messageJson.GetValue("firstName");
+            string lastName = (string)messageJson.GetValue("lastName");
+            string internalId = (int)messageJson.GetValue("_internalId");
+            return new Employee(firstName, lastName, internalId);
         }
-
-        public void Print_Employee()
+        catch (Exception ex)
         {
-            Console.WriteLine("Name: " + this.first_name + this.last_name); /* This prints only the full name */
-        }
+            Console.WriteLine("Invalid Employee JSON object");
+            throw;
 
-        public int PrintEmployeeId()
-        {
-            return this.InternalId;
         }
-
-        public string MakeString()
-        {
-            return "Name: " + this.first_name + " " + this.last_name + " " + " ID: " + this.InternalId;
-        }
-
-        public void saveToFile(string fileName)
-        {
-            using (FileStream fs = File.Open(fileName, FileMode.Open, FileAccess.Write, FileShare.None))
-            {
-                fs.Write(Encoding.ASCII.GetBytes(this.MakeString()));
-            }
-        }
-
     }
 }

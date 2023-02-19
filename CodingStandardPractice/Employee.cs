@@ -41,21 +41,22 @@ namespace CodingStandardPractice
             Console.WriteLine("Name: " + this.first_name + this.last_name); /* This prints only the full name */
         }
 
-        public int Print_Employee_Id()
+        public int PrintEmployeeId()
         {
             return this.InternalId;
         }
 
-        public string makeString()
+        public string MakeString()
         {
             return "Name: " + this.first_name + " " + this.last_name + " " + " ID: " + this.InternalId;
         }
 
         public void saveToFile(string fileName)
         {
-            FileStream fs = File.Open(fileName, FileMode.Open, FileAccess.Write, FileShare.None);
-            fs.Write(Encoding.ASCII.GetBytes(this.makeString()));
-            fs.Close();
+            using (FileStream fs = File.Open(fileName, FileMode.Open, FileAccess.Write, FileShare.None))
+            {
+                fs.Write(Encoding.ASCII.GetBytes(this.MakeString()));
+            }
         }
 
     }
